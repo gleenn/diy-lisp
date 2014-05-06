@@ -28,3 +28,12 @@ def evaluate(ast, env):
 
     if ast[0] == "atom":
         return is_atom(evaluate(ast[1], env))
+
+    if ast[0] == "eq":
+        evaluated_items = [evaluate(item, env) for item in ast[1:]]
+        for i in range(len(evaluated_items) - 1):
+            return is_atom(evaluated_items[i]) and evaluated_items[i] == evaluated_items[i + 1]
+        else:
+            return True
+
+    return [evaluate(x, env) for x in ast]
