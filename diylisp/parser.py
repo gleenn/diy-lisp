@@ -14,7 +14,6 @@ def parse(source):
     """Parse string representation of one *single* expression
     into the corresponding Abstract Syntax Tree."""
 
-    print source
     source = remove_comments(source.strip()).strip()
 
     # parse emtpry strings
