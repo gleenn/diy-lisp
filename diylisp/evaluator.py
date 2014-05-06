@@ -42,9 +42,6 @@ def evaluate(ast, env):
         else:
             return True
 
-    print function_name
-    print first_arg
-    print second_arg
     if function_name in ["+", "-", "*", "/", "mod", "<", ">"] and not (is_integer(first_arg) and is_integer(second_arg)):
         error_message = "Math functions only take integer args but you tried to do (%s, %s, %s)" % (
         function_name, first_arg, second_arg)
@@ -70,5 +67,13 @@ def evaluate(ast, env):
 
     if function_name == "<":
         return first_arg < second_arg
+
+
+    if function_name == "if":
+        third_arg = evaluate(ast[3], env)
+        if first_arg:
+            return second_arg
+        else:
+            return third_arg
 
     return [evaluate(x, env) for x in ast]
