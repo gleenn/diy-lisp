@@ -33,6 +33,12 @@ def evaluate(ast, env):
     if function_name == "atom":
         return is_atom(first_arg)
 
+    if function_name == "if":
+        if first_arg:
+            return evaluate(ast[2], env)
+        else:
+            return evaluate(ast[3], env)
+
     second_arg = evaluate(ast[2], env)
 
     if function_name == "eq":
@@ -67,13 +73,5 @@ def evaluate(ast, env):
 
     if function_name == "<":
         return first_arg < second_arg
-
-
-    if function_name == "if":
-        third_arg = evaluate(ast[3], env)
-        if first_arg:
-            return second_arg
-        else:
-            return third_arg
 
     return [evaluate(x, env) for x in ast]
