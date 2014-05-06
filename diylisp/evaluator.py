@@ -16,4 +16,15 @@ in a day, after all.)
 
 def evaluate(ast, env):
     """Evaluate an Abstract Syntax Tree in the specified environment."""
-    raise NotImplementedError("DIY")
+
+    if is_atom(ast):
+        return ast
+
+    if ast[0] == "quote":
+        if len(ast) == 2:
+            return ast[1]
+        else:
+            return []
+
+    if ast[0] == "atom":
+        return is_atom(evaluate(ast[1], env))
