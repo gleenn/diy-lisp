@@ -15,25 +15,40 @@ def parse(source):
     into the corresponding Abstract Syntax Tree."""
 
     print source
-    source = remove_comments(source.strip())
+    source = remove_comments(source.strip()).strip()
 
+    # parse emtpry strings
     if source == "":
         return
-    elif source == "#t":
+
+    # parse true
+    if source == "#t":
         return True
-    elif source == "#f":
+
+    # parse false
+    if source == "#f":
         return False
-    elif source[0] in [str(i) for i in range(10)]:
+
+    # parse numbers
+    if source[0] in [str(i) for i in range(10)]:
         return int(source)
-    elif source[0] == "(":
+
+    # parse quoted strings
+
+    if source[0] == "'":
+        return ["quote", parse(source[1:])]
+
+    # parse parentheses
+    if source[0] == "(":
         matching_paren_idx = find_matching_paren(source)
 
         if matching_paren_idx != len(source) - 1:
             raise LispError("Expected EOF")
 
         return [parse(remove_comments(sub_source.strip()).strip()) for sub_source in split_exps(source[1:matching_paren_idx])]
-    else:
-        return source
+
+    # parse symbols
+    return source
 
 ##
 ## Below are a few useful utility functions. These should come in handy when 
