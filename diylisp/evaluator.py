@@ -17,7 +17,13 @@ in a day, after all.)
 def evaluate(ast, env):
     """Evaluate an Abstract Syntax Tree in the specified environment."""
 
-    if is_atom(ast):
+    # if is_atom(ast):
+    #     return ast
+
+    if is_symbol(ast) and ast != "#t" and ast != "#f":
+        return env.lookup(ast)
+
+    if is_integer(ast):
         return ast
 
     function_name = ast[0]
@@ -28,17 +34,31 @@ def evaluate(ast, env):
         else:
             return []
 
-    first_arg = evaluate(ast[1], env)
-
     if function_name == "atom":
+        first_arg = evaluate(ast[1], env)
         return is_atom(first_arg)
 
     if function_name == "if":
+        first_arg = evaluate(ast[1], env)
         if first_arg:
             return evaluate(ast[2], env)
         else:
             return evaluate(ast[3], env)
 
+    if function_name == "define":
+        if len(ast) != 3:
+            raise LispError("Wrong number of arguments")
+
+        symbol_name = ast[1]
+
+        if not is_symbol(symbol_name):
+            raise LispError("non-symbol")
+
+        value = evaluate(ast[2], env)
+        env.set(symbol_name, value)
+        return value
+
+    first_arg = evaluate(ast[1], env)
     second_arg = evaluate(ast[2], env)
 
     if function_name == "eq":
