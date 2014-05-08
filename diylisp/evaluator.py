@@ -28,8 +28,8 @@ def evaluate(ast, env):
 
     if is_symbol(ast):
         symbol_value = env.lookup(ast)
-        if is_closure(symbol_value):
-            return evaluate(symbol_value, env)
+        # if is_closure(symbol_value):
+        #     return evaluate(symbol_value, env)
         return symbol_value
 
     if is_integer(ast):
@@ -99,26 +99,35 @@ def evaluate(ast, env):
     if first_element == "<":
         return evaluate(ast[1], env) < evaluate(ast[2], env)
 
+    if first_element == "lambda":
+        if len(ast) != 3:
+            raise LispError("number of arguments")
+        params = ast[1]
+        if not is_list(params):
+            raise LispError("params must be a list")
+        body = ast[2]
+        return Closure(env, params, body)
+
     if is_list(ast):
-        print ast
+        print first_element
+
         if len(ast) == 0:
             return []
 
-        print "first element %s" % first_element
-        if first_element == "lambda":
-            if len(ast) != 3:
-                raise LispError("number of arguments")
-            params = ast[1]
-            if not is_list(params):
-                raise LispError("params must be a list")
-            body = ast[2]
-            return Closure(env, params, body)
-
-        elif is_symbol(first_element) and env.has_symbol(first_element):
+        if is_symbol(first_element) and env.has_symbol(first_element):
             closure = env.lookup(first_element)
 
         elif is_closure(first_element):
             closure = first_element
+
+        elif first_element[0] == "lambda":
+            if len(first_element) != 3:
+                raise LispError("number of arguments")
+            params = first_element[1]
+            if not is_list(params):
+                raise LispError("params must be a list")
+            body = first_element[2]
+            closure = Closure(env, params, body)
 
         argument_bindings = {}
         if len(ast) > 1:
@@ -127,4 +136,8 @@ def evaluate(ast, env):
                 param_name = closure.params[i]
                 argument_bindings[param_name] = evaluate(param_values[i], env)
 
-        return evaluate(closure.body, closure.env.extend(argument_bindings))
+        result = evaluate(closure.body, closure.env.extend(argument_bindings))
+        print result
+        if is_closure(result):
+            return evaluate(result.body, result.env)
+        return result
