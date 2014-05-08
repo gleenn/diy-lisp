@@ -14,7 +14,9 @@ class LispError(Exception):
 class Closure:
     
     def __init__(self, env, params, body):
-        raise NotImplementedError("DIY")
+        self.env = env
+        self.params = params
+        self.body = body
 
     def __str__(self):
         return "<closure/%d>" % len(self.params)
@@ -29,6 +31,9 @@ class Environment:
             return self.variables[symbol]
         else:
             raise LispError("symbol not found: %s" % symbol)
+
+    def has_symbol(self, symbol):
+        return self.variables.has_key(symbol)
 
     def extend(self, variables):
         environment_copy = self.variables.copy()

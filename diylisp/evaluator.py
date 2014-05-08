@@ -20,32 +20,39 @@ def evaluate(ast, env):
     # if is_atom(ast):
     #     return ast
 
-    if is_symbol(ast) and ast != "#t" and ast != "#f":
-        return env.lookup(ast)
+    if ast == "#t":
+        return True
+
+    if ast == "#f":
+        return False
+
+    if is_symbol(ast):
+        symbol_value = env.lookup(ast)
+        if is_closure(symbol_value):
+            return evaluate(symbol_value, env)
+        return symbol_value
 
     if is_integer(ast):
         return ast
 
-    function_name = ast[0]
+    first_element = ast[0]
 
-    if function_name == "quote":
+    if first_element == "quote":
         if len(ast) == 2:
             return ast[1]
         else:
             return []
 
-    if function_name == "atom":
-        first_arg = evaluate(ast[1], env)
-        return is_atom(first_arg)
+    if first_element == "atom":
+        return is_atom(evaluate(ast[1], env))
 
-    if function_name == "if":
-        first_arg = evaluate(ast[1], env)
-        if first_arg:
+    if first_element == "if":
+        if evaluate(ast[1], env):
             return evaluate(ast[2], env)
         else:
             return evaluate(ast[3], env)
 
-    if function_name == "define":
+    if first_element == "define":
         if len(ast) != 3:
             raise LispError("Wrong number of arguments")
 
@@ -58,40 +65,66 @@ def evaluate(ast, env):
         env.set(symbol_name, value)
         return value
 
-    first_arg = evaluate(ast[1], env)
-    second_arg = evaluate(ast[2], env)
-
-    if function_name == "eq":
+    if first_element == "eq":
         evaluated_items = [evaluate(item, env) for item in ast[1:]]
         for i in range(len(evaluated_items) - 1):
             return is_atom(evaluated_items[i]) and evaluated_items[i] == evaluated_items[i + 1]
         else:
             return True
 
-    if function_name in ["+", "-", "*", "/", "mod", "<", ">"] and not (is_integer(first_arg) and is_integer(second_arg)):
+    if first_element in ["+", "-", "*", "/", "mod", "<", ">"] and not (is_integer(evaluate(ast[1], env)) and is_integer(
+            evaluate(ast[2], env))):
         error_message = "Math functions only take integer args but you tried to do (%s, %s, %s)" % (
-        function_name, first_arg, second_arg)
+        first_element, (evaluate(ast[1], env)), (evaluate(ast[2], env)))
         raise LispError(error_message)
 
-    if function_name == "+":
-        return first_arg + second_arg
+    if first_element == "+":
+        return evaluate(ast[1], env) + evaluate(ast[2], env)
 
-    if function_name == "-":
-        return first_arg - second_arg
+    if first_element == "-":
+        return evaluate(ast[1], env) - evaluate(ast[2], env)
 
-    if function_name == "*":
-        return first_arg * second_arg
+    if first_element == "*":
+        return evaluate(ast[1], env) * evaluate(ast[2], env)
 
-    if function_name == "/":
-        return first_arg / second_arg
+    if first_element == "/":
+        return evaluate(ast[1], env) / evaluate(ast[2], env)
 
-    if function_name == "mod":
-        return first_arg % second_arg
+    if first_element == "mod":
+        return evaluate(ast[1], env) % evaluate(ast[2], env)
 
-    if function_name == ">":
-        return first_arg > second_arg
+    if first_element == ">":
+        return evaluate(ast[1], env) > evaluate(ast[2], env)
 
-    if function_name == "<":
-        return first_arg < second_arg
+    if first_element == "<":
+        return evaluate(ast[1], env) < evaluate(ast[2], env)
 
-    return [evaluate(x, env) for x in ast]
+    if is_list(ast):
+        print ast
+        if len(ast) == 0:
+            return []
+
+        print "first element %s" % first_element
+        if first_element == "lambda":
+            if len(ast) != 3:
+                raise LispError("number of arguments")
+            params = ast[1]
+            if not is_list(params):
+                raise LispError("params must be a list")
+            body = ast[2]
+            return Closure(env, params, body)
+
+        elif is_symbol(first_element) and env.has_symbol(first_element):
+            closure = env.lookup(first_element)
+
+        elif is_closure(first_element):
+            closure = first_element
+
+        argument_bindings = {}
+        if len(ast) > 1:
+            param_values = ast[1:]
+            for i in range(len(closure.params)):
+                param_name = closure.params[i]
+                argument_bindings[param_name] = evaluate(param_values[i], env)
+
+        return evaluate(closure.body, closure.env.extend(argument_bindings))
