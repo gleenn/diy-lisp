@@ -17,9 +17,6 @@ in a day, after all.)
 def evaluate(ast, env):
     """Evaluate an Abstract Syntax Tree in the specified environment."""
 
-    # if is_atom(ast):
-    #     return ast
-
     if ast == "#t":
         return True
 
@@ -120,14 +117,10 @@ def evaluate(ast, env):
         elif is_closure(first_element):
             closure = first_element
 
-        elif first_element[0] == "lambda":
-            if len(first_element) != 3:
-                raise LispError("number of arguments")
-            params = first_element[1]
-            if not is_list(params):
-                raise LispError("params must be a list")
-            body = first_element[2]
-            closure = Closure(env, params, body)
+        else:
+            closure = evaluate(first_element, env)
+            if not is_closure(closure):
+                raise LispError("not a function")
 
         argument_bindings = {}
         if len(ast) > 1:
