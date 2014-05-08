@@ -125,8 +125,11 @@ def evaluate(ast, env):
         argument_bindings = {}
         if len(ast) > 1:
             param_values = ast[1:]
-            for i in range(len(closure.params)):
-                param_name = closure.params[i]
+            closure_params = closure.params
+            if len(closure_params) != len(param_values):
+                raise LispError("wrong number of arguments, expected %i got %i" % (len(closure_params), len(param_values)))
+            for i in range(len(closure_params)):
+                param_name = closure_params[i]
                 argument_bindings[param_name] = evaluate(param_values[i], env)
 
         result = evaluate(closure.body, closure.env.extend(argument_bindings))
