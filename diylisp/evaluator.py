@@ -167,7 +167,6 @@ def evaluate(ast, env):
                 argument_bindings[param_name] = evaluate(param_values[i], env)
 
         result = evaluate(closure.body, closure.env.extend(argument_bindings))
-        print result
         if is_closure(result):
             return evaluate(result.body, result.env)
         return result
