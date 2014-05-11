@@ -96,6 +96,42 @@ def evaluate(ast, env):
     if first_element == "<":
         return evaluate(ast[1], env) < evaluate(ast[2], env)
 
+    # List functions
+
+    if first_element == "cons":
+        if len(ast) != 3:
+            raise LispError("cons requires 2 arguments")
+        element = evaluate(ast[1], env)
+        list = evaluate(ast[2], env)
+        list.insert(0, element)
+        return list
+
+    if first_element == "head":
+        if len(ast) != 2:
+            raise LispError("head requires 1 argument")
+        list_expression = evaluate(ast[1], env)
+        if not is_list(list_expression) or len(list_expression) < 1:
+            raise LispError("head requires a list of at least length 1")
+        return list_expression[0]
+
+    if first_element == "tail":
+        if len(ast) != 2:
+            raise LispError("tail requires 1 argument")
+        list_expression = evaluate(ast[1], env)
+        if not is_list(list_expression) or len(list_expression) < 1:
+            raise LispError("tail requires a list argument")
+        return list_expression[1:]
+
+    if first_element == "empty":
+        if len(ast) != 2:
+            raise LispError("empty requires 1 argument")
+        list_expression = evaluate(ast[1], env)
+        if not is_list(list_expression):
+            raise LispError("empty requires a list argument")
+        return len(list_expression) == 0
+
+    # Function functions
+
     if first_element == "lambda":
         if len(ast) != 3:
             raise LispError("number of arguments")
@@ -106,8 +142,6 @@ def evaluate(ast, env):
         return Closure(env, params, body)
 
     if is_list(ast):
-        print first_element
-
         if len(ast) == 0:
             return []
 
