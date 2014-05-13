@@ -101,10 +101,10 @@ def evaluate(ast, env):
     if first_element == "cons":
         if len(ast) != 3:
             raise LispError("cons requires 2 arguments")
-        if not is_list(ast[2]):
-            raise LispError("cons requires second arg to be list but got %s" % ast[2])
         element = evaluate(ast[1], env)
         list = evaluate(ast[2], env)
+        if not is_list(list):
+            raise LispError("cons requires second arg to be list but got %s" % unparse(ast[2]))
         list.insert(0, element)
         return list
 

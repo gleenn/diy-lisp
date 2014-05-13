@@ -39,7 +39,7 @@ def test_cons_requires_second_arg_to_be_list():
     """If the second arg is not a list `cons should raise an error."""
 
     with assert_raises(LispError):
-        evaluate(parse("(cons 1 1)"), Environment())
+        evaluate(parse("(cons 1 (quote 1))"), Environment())
 
 
 def test_getting_first_element_from_list():
