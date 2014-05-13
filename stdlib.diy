@@ -70,6 +70,13 @@
                 (cons (head xs) (filter filter-func (tail xs)))
                 (filter filter-func (tail xs))))))
 
+(define map
+    (lambda (map-func xs)
+        (if (empty xs)
+            '()
+            (cons
+                (map-func (head xs))
+                (map map-func (tail xs))))))
 
 ;; DIY -- Implement the rest of your standard library
 ;; here as part 7 of the workshop.
