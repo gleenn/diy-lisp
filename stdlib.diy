@@ -62,6 +62,14 @@
                 (head xs)
                 (append (tail xs) ys)))))
 
+(define filter
+    (lambda (filter-func xs)
+        (if (empty xs)
+            '()
+            (if (eq #t (filter-func (head xs)))
+                (cons (head xs) (filter filter-func (tail xs)))
+                (filter filter-func (tail xs))))))
+
 
 ;; DIY -- Implement the rest of your standard library
 ;; here as part 7 of the workshop.
