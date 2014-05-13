@@ -20,6 +20,17 @@
                 #f)
             #f)))
 
+(define xor
+    (lambda (a b)
+        (if (eq #t a)
+            (if (eq #f b)
+                #t
+                #f)
+            (if (eq #t b)
+                #t
+                #f))))
+
+
 
 ;; DIY -- Implement the rest of your standard library
 ;; here as part 7 of the workshop.
