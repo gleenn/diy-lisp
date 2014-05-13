@@ -4,7 +4,7 @@ import os
 import sys
 from os.path import dirname, relpath, join
 
-from types import LispError, Environment
+from types import LispError, QuitError, Environment
 from parser import remove_comments
 from interpreter import interpret, interpret_file
 
@@ -33,6 +33,11 @@ def repl():
             print colored("!", "red"),
             print faded(str(e.__class__.__name__) + ":"),
             print str(e)
+        except QuitError, e:
+            print colored("!", "red"),
+            print faded(str(e.__class__.__name__) + ":"),
+            print str(e)
+            sys.exit(0)
         except KeyboardInterrupt:
             msg = "Interupted. " + faded("(Use ^D to exit)")
             print "\n" + colored("! ", "red") + msg

@@ -11,6 +11,10 @@ class LispError(Exception):
     """General lisp error class."""
     pass
 
+class QuitError(Exception):
+    """General lisp error class."""
+    pass
+
 class Closure:
     
     def __init__(self, env, params, body):

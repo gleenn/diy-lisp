@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from types import Environment, LispError, Closure
+from types import Environment, LispError, QuitError, Closure
 from ast import is_boolean, is_atom, is_symbol, is_list, is_closure, is_integer
 from asserts import assert_exp_length, assert_valid_definition, assert_boolean
 from parser import unparse
@@ -140,6 +140,9 @@ def evaluate(ast, env):
             raise LispError("params must be a list")
         body = ast[2]
         return Closure(env, params, body)
+
+    if first_element == "quit":
+        raise QuitError("Bye!")
 
     if is_list(ast):
         if len(ast) == 0:
