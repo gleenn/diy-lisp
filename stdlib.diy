@@ -6,9 +6,19 @@
 
 (define or
     (lambda (a b)
-        (if (eq #t a) #t
-        (if (eq #t b) #t
-             #f))))
+        (if (eq #t a)
+            #t
+            (if (eq #t b)
+                #t
+                #f))))
+
+(define and
+    (lambda (a b)
+        (if (eq #t a)
+            (if (eq #t b)
+                #t
+                #f)
+            #f)))
 
 
 ;; DIY -- Implement the rest of your standard library
