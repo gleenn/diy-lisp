@@ -35,6 +35,13 @@ def test_creating_longer_lists_with_only_cons():
     result = evaluate(parse("(cons 3 (cons (- 4 2) (cons 1 '())))"), Environment())
     assert_equals(parse("(3 2 1)"), result)
 
+def test_cons_requires_second_arg_to_be_list():
+    """If the second arg is not a list `cons should raise an error."""
+
+    with assert_raises(LispError):
+        evaluate(parse("(cons 1 1)"), Environment())
+
+
 def test_getting_first_element_from_list():
     """`head` extracts the first element of a list."""
     
