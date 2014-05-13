@@ -48,6 +48,12 @@
             0
             (+ (head xs) (sum (tail xs))))))
 
+(define length
+    (lambda (xs)
+        (if (empty xs)
+            0
+            (+ 1 (length (tail xs))))))
+
 
 ;; DIY -- Implement the rest of your standard library
 ;; here as part 7 of the workshop.
