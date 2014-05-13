@@ -30,6 +30,18 @@
                 #t
                 #f))))
 
+(define <=
+    (lambda (a b)
+        (or
+            (eq a b)
+            (< a b))))
+
+(define >=
+    (lambda (a b)
+        (or
+            (eq a b)
+            (> a b))))
+
 
 
 ;; DIY -- Implement the rest of your standard library
