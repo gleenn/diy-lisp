@@ -42,6 +42,11 @@
             (eq a b)
             (> a b))))
 
+(define sum
+    (lambda (xs)
+        (if (empty xs)
+            0
+            (+ (head xs) (sum (tail xs))))))
 
 
 ;; DIY -- Implement the rest of your standard library
