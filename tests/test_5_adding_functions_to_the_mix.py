@@ -56,6 +56,11 @@ def test_lambda_number_of_arguments():
     with assert_raises_regexp(LispError, "number of arguments"):
         evaluate(parse("(lambda (foo) (bar) (baz))"), Environment())
 
+def test_lambda_with_lambda_arg():
+    """The `lambda` form should allow for nested lambdas."""
+
+    assert_equals(42, evaluate(parse("((lambda () ((lambda () 42))))"), Environment()))
+
 def test_defining_lambda_with_error_in_body():
     """The function body should not be evaluated when the lambda is defined.
 
