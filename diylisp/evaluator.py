@@ -154,6 +154,11 @@ def evaluate(ast, env):
         print " ".join((str(evaluate(i, env)) for i in ast[1:]))
         return []
 
+    if first_element == "do":
+        for i in ast[1:-1]:
+            evaluate(i, env)
+        return evaluate(ast[-1], env)
+
     if is_list(ast):
         if len(ast) == 0:
             return []
