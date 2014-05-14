@@ -146,6 +146,14 @@ def evaluate(ast, env):
     if first_element == "quit":
         raise QuitError("Bye!")
 
+    if first_element == "print":
+        print "".join((str(evaluate(i, env)) for i in ast[1:]))
+        return []
+
+    if first_element == "pp":
+        print " ".join((str(evaluate(i, env)) for i in ast[1:]))
+        return []
+
     if is_list(ast):
         if len(ast) == 0:
             return []
